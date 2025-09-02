@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Your Timetable - TimeGen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>TimeGen</span>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="#" class="active">Generator</a>
+                <a href="#" id="helpBtn"><i class="fas fa-question-circle"></i> Help</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="app-container">
+        <header>
+            <h1>Create Your Timetable</h1>
+            <p class="tagline">Customize your perfect study schedule with our intuitive generator</p>
+        </header>
+        
+        <main>
+            <section class="setup-panel">
+                <div class="panel-header">
+                    <h2>Setup Your Timetable</h2>
+                </div>
+                
+                <form id="setupForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="totalHours">Total Study Hours</label>
+                            <input type="number" id="totalHours" min="1" max="24" required value="4">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="startTime">Daily Start Time</label>
+                            <input type="time" id="startTime" required value="09:00">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="periodDuration">Period Duration (minutes)</label>
+                            <input type="number" id="periodDuration" min="1" max="180" required value="60" step="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="breakDuration">Break Duration (minutes)</label>
+                            <input type="number" id="breakDuration" min="0" max="60" required value="15" step="5">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="enableLunch">
+                            <span class="checkmark"></span>
+                            Add Lunch/Gap Period
+                        </label>
+                        <div id="lunchOptions" class="lunch-options">
+                            <div class="lunch-option">
+                                <label for="lunchAfter">Insert after period:</label>
+                                <input type="number" id="lunchAfter" min="1" value="3">
+                            </div>
+                            <div class="lunch-option">
+                                <label for="lunchLabel">Label:</label>
+                                <input type="text" id="lunchLabel" value="Lunch Break">
+                            </div>
+                            <div class="lunch-option">
+                                <label for="lunchDuration">Duration (minutes):</label>
+                                <input type="number" id="lunchDuration" min="15" max="120" value="45" step="5">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="scheduleType">Schedule Type</label>
+                        <div class="schedule-options">
+                            <label class="radio-container">
+                                <input type="radio" name="scheduleType" value="single" id="singleDay">
+                                <span class="radio-label">Single Day</span>
+                            </label>
+                            <label class="radio-container">
+                                <input type="radio" name="scheduleType" value="weekdays" id="weekdays" checked>
+                                <span class="radio-label">Weekdays (Mon-Fri)</span>
+                            </label>
+                            <label class="radio-container">
+                                <input type="radio" name="scheduleType" value="fullweek" id="fullweek">
+                                <span class="radio-label">Full Week</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div id="daySelector" class="form-group hidden">
+                        <label for="selectedDay">Select Day</label>
+                        <select id="selectedDay">
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                            <option value="Saturday">Saturday</option>
+                            <option value="Sunday">Sunday</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Subjects/Activities</label>
+                        <div id="subjectsList" class="subjects-list">
+                            <div class="subject-entry">
+                                <input type="text" class="subject-name" placeholder="Enter subject name" required>
+                                <input type="color" class="subject-color" value="#4361ee">
+                                <button type="button" class="remove-btn" title="Remove subject">×</button>
+                            </div>
+                        </div>
+                        <button type="button" id="addSubject" class="add-btn">
+                            <i class="fas fa-plus"></i> Add Subject
+                        </button>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" id="resetBtn" class="btn secondary-btn">
+                            <i class="fas fa-redo"></i> Reset
+                        </button>
+                        <button type="submit" id="generateBtn" class="btn primary-btn">
+                            <i class="fas fa-magic"></i> Generate Timetable
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="timetable-panel">
+                <div class="panel-header">
+                    <h2>Your Timetable</h2>
+                    <div class="header-actions">
+                        <button id="exportBtn" class="btn icon-btn" title="Export Timetable">
+                            <i class="fas fa-file-export"></i> Export
+                        </button>
+                        <button id="printBtn" class="btn icon-btn" title="Print Timetable">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="timetable-wrapper">
+                    <table id="timetable">
+                        <thead>
+                            <tr id="daysRow">
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="timetableBody"></tbody>
+                    </table>
+                    
+                    <div id="emptyState" class="empty-state">
+                        <i class="fas fa-calendar-plus"></i>
+                        <p>Your timetable will appear here after generation</p>
+                        <button class="btn secondary-btn" id="emptyStateBtn">Generate Now</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>How to Use TimeGen</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="help-section">
+                    <h3><i class="fas fa-clock"></i> Basic Setup</h3>
+                    <p>Start by setting your study hours, start time, and period duration. These are the basic parameters for your timetable.</p>
+                </div>
+                <div class="help-section">
+                    <h3><i class="fas fa-utensils"></i> Break Management</h3>
+                    <p>Enable lunch breaks to add a gap period in your schedule. You can customize when it appears and its duration.</p>
+                </div>
+                <div class="help-section">
+                    <h3><i class="fas fa-book"></i> Subjects</h3>
+                    <p>Add your subjects and assign colors to them. You can add as many subjects as you need.</p>
+                </div>
+                <div class="help-section">
+                    <h3><i class="fas fa-save"></i> Save & Export</h3>
+                    <p>Save your timetable as a template for future use or export it in various formats.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>TimeGen</h3>
+                <p>Create perfect study schedules with ease</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="#">Generator</a>
+                <a href="#">Help</a>
+            </div>
+            <div class="footer-section">
+                <h4>Connect</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 TimeGen. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html> 
